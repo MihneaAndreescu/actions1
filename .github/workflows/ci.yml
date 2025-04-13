@@ -1,0 +1,40 @@
+name: C++ CI
+
+# Trigger the workflow on pushes or pull requests to the main branch
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    # Use a Windows runner because you work in a Windows environment
+    runs-on: windows-latest
+
+    steps:
+    # Step 1. Check out the repository code onto the runner.
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    # Step 2. Option A: Use MinGW (g++) for building your C++ project.
+    # If you prefer using g++ you can install mingw via Chocolatey. Windows runners may not
+    # have MinGW pre-installed, so we add installation commands.
+    - name: Install MinGW (g++ compiler)
+      run: |
+        choco install mingw -y
+        refreshenv
+
+    # Step 3. Build the project
+    - name: Build with g++
+      run: |
+        # Verify that g++ is available
+        g++ --version
+        # Compile the main.cpp file. Adjust the command if you have additional source files.
+        g++ -o myapp main.cpp
+
+    # Step 4. Run the compiled executable
+    - name: Run tests
+      run: |
+        # In Windows, add the .exe extension
+        myapp.exe
